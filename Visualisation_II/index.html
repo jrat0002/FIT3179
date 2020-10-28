@@ -12,14 +12,24 @@
 
 <div id="vis1"></div>
 <div id="vis2"></div>
+<div id="vis3"></div>
+<div id="vis4"></div>
 
 <script type="text/javascript">
   var spec = "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/js/map.vl.json";
   vegaEmbed('#vis1', spec).then(function(result) {
     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
-  var spec = "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/js/trellis.vl.json";
+  var spec = "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/js/heat_map.vl.json";
   vegaEmbed('#vis2', spec).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+  var spec = "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/js/passenger_load.vl.json";
+  vegaEmbed('#vis3', spec).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+  var spec = "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/js/airport_rank.vl.json";
+  vegaEmbed('#vis4', spec).then(function(result) {
     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
 </script>
