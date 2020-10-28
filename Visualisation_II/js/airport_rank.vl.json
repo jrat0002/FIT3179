@@ -1,0 +1,84 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "title": "Airport ranking by total number of domestic passengers each year",
+  "data": {
+    "url": "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/data/mon_pax_web.csv"
+  },
+  "transform": [
+    {"filter": "datum.AIRPORT != 'All Australian Airports'"},
+    {
+      "lookup": "AIRPORT",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/data/au_city_locations.csv"
+        },
+        "key": "city_upper",
+        "fields": ["city"]
+      },
+      "as": ["AIRPORT"]
+    },
+    {
+      "aggregate": [
+        {"op": "sum", "field": "Dom_Pax_Total", "as": "dom_pax_sum"}
+      ],
+      "groupby": ["Year", "AIRPORT"]
+    },
+    {
+      "sort": [{"field": "dom_pax_sum", "order": "descending"}],
+      "window": [{"op": "rank", "as": "rank"}],
+      "groupby": ["Year"]
+    }
+  ],
+  "layer": [
+    {
+      "selection": {
+        "airport_selection": {
+          "type": "multi",
+          "fields": ["AIRPORT"],
+          "bind": "legend"
+        }
+      },
+      "mark": {"type": "line"},
+      "encoding": {
+        "x": {"field": "Year", "type": "ordinal"},
+        "y": {"field": "rank", "type": "ordinal"},
+        "color": {
+          "condition": {
+            "selection": "airport_selection",
+            "field": "AIRPORT",
+            "type": "nominal",
+            "scale": {"scheme": "category20b"}
+          },
+          "value": "lightgray"
+        },
+        "tooltip": [
+          {"field": "AIRPORT", "type": "nominal", "title": "Airport"},
+          {"field": "rank", "type": "nominal"},
+          {"field": "Year", "type": "nominal"}
+        ]
+      }
+    },
+    {
+      "mark": "circle",
+      "encoding": {
+        "x": {"field": "Year", "type": "ordinal"},
+        "y": {"field": "rank", "type": "ordinal"},
+        "color": {
+          "condition": {
+            "selection": "airport_selection",
+            "field": "AIRPORT",
+            "type": "nominal",
+            "scale": {"scheme": "category20b"}
+          },
+          "value": "lightgray"
+        },
+        "tooltip": [
+          {"field": "AIRPORT", "type": "nominal", "title": "Airport"},
+          {"field": "rank", "type": "nominal"},
+          {"field": "Year", "type": "nominal"}
+        ]
+      }
+    }
+  ],
+  "config": {}
+}

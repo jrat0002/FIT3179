@@ -1,0 +1,120 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "title": "Passenger trips per month",
+  "width": 300,
+  "height": 300,
+  "data": {
+    "url": "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/data/dom_citypairs_web.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "Month_num": "number",
+        "Year": "number",
+        "Passenger_Trips": "number",
+        "Passenger_Load_Factor": "number",
+        "Aircraft_Trips": "number"
+      }
+    }
+  },
+  "params": [
+    {
+      "name": "route_selection",
+      "bind": {
+        "input": "select",
+        "options": [
+          null,
+          "Melbourne - Sydney",
+          "Brisbane - Melbourne",
+          "Melbourne - Perth",
+          "Cairns - Melbourne",
+          "Darwin - Melbourne",
+          "Canberra - Melbourne",
+          "Hobart - Melbourne",
+          "Hobart - Sydney",
+          "Brisbane - Sydney",
+          "Canberra - Sydney",
+          "Cairns - Sydney",
+          "Darwin - Sydney",
+          "Perth - Sydney"
+        ],
+        "labels": [
+          "Show all",
+          "Melbourne - Sydney",
+          "Brisbane - Melbourne",
+          "Melbourne - Perth",
+          "Cairns - Melbourne",
+          "Darwin - Melbourne",
+          "Canberra - Melbourne",
+          "Hobart - Melbourne",
+          "Hobart - Sydney",
+          "Brisbane - Sydney",
+          "Canberra - Sydney",
+          "Cairns - Sydney",
+          "Darwin - Sydney",
+          "Perth - Sydney"
+        ],
+        "name": "Select a route: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "lookup": "City1",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/data/au_city_locations.csv"
+        },
+        "key": "city_upper",
+        "fields": ["city"]
+      },
+      "as": ["City1"]
+    },
+    {
+      "lookup": "City2",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/data/au_city_locations.csv"
+        },
+        "key": "city_upper",
+        "fields": ["city"]
+      },
+      "as": ["City2"]
+    },
+    {"calculate": "datum.City1 + ' - ' + datum.City2", "as": "Route"},
+    {
+      "calculate": "datum.Passenger_Load_Factor/100",
+      "as": "passenger_load_factor_scaled"
+    },
+    {"calculate": "datetime(datum.Year, datum.Month_num, 1)", "as": "Date"},
+    {"filter": "datum.Year >= 2005 && datum.Year <= 2019"},
+    {"filter": "route_selection == null || datum.Route == route_selection"}
+  ],
+  "mark": {"type": "rect"},
+  "encoding": {
+    "x": {
+      "field": "Month_num",
+      "type": "nominal",
+      "title": "Month",
+      "axis": {"grid": false, "domain": false}
+    },
+    "y": {"field": "Year", "type": "ordinal"},
+    "color": {
+      "field": "Passenger_Trips",
+      "aggregate": "mean",
+      "type": "quantitative",
+      "legend": {"title": null},
+      "scale": {"scheme": "yellowgreenblue"}
+    },
+    "tooltip": [
+      {"field": "Date", "timeUnit": "year", "title": "Year"},
+      {"field": "Date", "timeUnit": "month", "title": "Month"},
+      {
+        "field": "Passenger_Trips",
+        "aggregate": "mean",
+        "title": "Average passenger trips",
+        "format": ".0f"
+      }
+    ]
+  },
+  "config": {}
+}
