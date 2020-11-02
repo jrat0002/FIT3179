@@ -1,0 +1,82 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "title": "Proportion of domestic flights vs total flights",
+  "width": "container",
+  "data": {
+    "url": "https://raw.githubusercontent.com/jrat0002/FIT3179/main/Visualisation_II/data/mon_pax_web.csv"
+  },
+  "params": [
+    {
+      "name": "airport_selection",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All Australian Airports",
+          "ADELAIDE",
+          "BRISBANE",
+          "CAIRNS",
+          "CANBERRA",
+          "DARWIN",
+          "GOLD COAST",
+          "HOBART",
+          "MELBOURNE",
+          "NEWCASTLE",
+          "PERTH",
+          "SUNSHINE COAST",
+          "SYDNEY",
+          "TOWNSVILLE"
+        ],
+        "labels": [
+          "All Australian Airports",
+          "ADELAIDE",
+          "BRISBANE",
+          "CAIRNS",
+          "CANBERRA",
+          "DARWIN",
+          "GOLD COAST",
+          "HOBART",
+          "MELBOURNE",
+          "NEWCASTLE",
+          "PERTH",
+          "SUNSHINE COAST",
+          "SYDNEY",
+          "TOWNSVILLE"
+        ],
+        "name": "Select an airport: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "filter": "datum.AIRPORT != 'ALICE SPRINGS' && datum.AIRPORT != 'AYERS ROCK' && datum.AIRPORT != 'BALLINA' && datum.AIRPORT != 'HAMILTON ISLAND' && datum.AIRPORT != 'KARRATHA' && datum.AIRPORT != 'LAUNCESTON' && datum.AIRPORT != 'MACKAY' && datum.AIRPORT != 'ROCKHAMPTON'"
+    },
+    {"calculate": "datetime(datum.Year, datum.Month)", "as": "Date"},
+    {
+      "calculate": "datum.Dom_Pax_Total / datum.Pax_Total",
+      "as": "proportion_domestic"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {"type": "area"},
+      "encoding": {
+        "x": {"field": "Date", "type": "temporal"},
+        "y": {
+          "field": "proportion_domestic",
+          "type": "quantitative",
+          "axis": {"title": "Proportion of domestic flights", "format": "%"},
+          "stack": false
+        },
+        "detail": {"field": "AIRPORT", "type": "nominal"},
+        "opacity": {
+          "condition": {
+            "test": "datum.AIRPORT == airport_selection || (airport_selection == null && datum.AIRPORT == 'All Australian Airports')",
+            "value": 1
+          },
+          "value": 0
+        }
+      }
+    }
+  ],
+  "config": {}
+}
